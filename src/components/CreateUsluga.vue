@@ -24,6 +24,10 @@
         />
       </div>
 
+      <div class="flex flex-col mt-4">
+        <InputText type="number" placeholder="Продолжительность в минутах" v-model="prodolzhitelnost" />
+      </div>
+
 
       <div class="mb-4 mt-4">
         <label
@@ -50,14 +54,11 @@
     </form>
   </div>
 
-  <Toast position="bottom-right" />
 </template>
 
 <script>
-import { useToast } from "primevue/usetoast";
 import InputText from "primevue/inputtext"
 import Button from "primevue/button"
-import Toast from "primevue/toast"
 
 import { useDataStore } from "@/stores/dataStore.js"
 
@@ -65,14 +66,14 @@ import { useDataStore } from "@/stores/dataStore.js"
 export default {
   components: {
     InputText,
-    Button,
-    Toast
+    Button
   },
 
   data() {
     return {
       uslugaName: "",
       stoimost: "",
+      prodolzhitelnost: 60,
       file: null
     }
   },
@@ -88,7 +89,8 @@ export default {
       const formData = new FormData()
       formData.append("nazvanie", this.uslugaName)
       formData.append("stoimost", this.stoimost)
-      formData.append("image", this.file)
+      formData.append("prodolzhitelnost", this.prodolzhitelnost)
+      if (this.file) formData.append("image", this.file)
 
       try {
         const res = await store.create_usluga(formData)
@@ -107,7 +109,7 @@ export default {
 
           await store.get_usluga(0, 5)
 
-        } else if (res && res.code === 11) {
+        } else if (res && res.code === 422) {
           this.$toast.add({
             severity: 'warn',
             summary: 'Ошибка валидации',
@@ -125,9 +127,11 @@ export default {
         }
 
 
-        this.uslugaName = ''
-        this.stoimost = ''
-        this.file = null
+        if (res?.code === 0) {
+          this.uslugaName = ''
+          this.stoimost = ''
+          this.file = null
+        }
 
       } catch (e) {
         console.log("CRITICAL ERROR:", e)

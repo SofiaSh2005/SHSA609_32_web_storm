@@ -13,3 +13,65 @@ h1 {
 @tailwind base; /* базовые стили  */
 @tailwind components; /* готовые компоненты типа стили для кнопок форм и тд */
 @tailwind utilities; /* инструменты (без них таилвинд не работает) */
+
+:root { color: #26332f; background: #f5f7f5; font-family: Inter, Arial, sans-serif; }
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; background: #f5f7f5; }
+button, input { font: inherit; }
+.app-shell { min-height: 100vh; }
+.main-menu { border: 0 !important; border-radius: 0 !important; padding: .65rem 2rem !important; box-shadow: 0 2px 16px #233c3210; }
+.brand, .user-box { display: flex; align-items: center; gap: .75rem; }
+.brand div, .user-box span { display: flex; flex-direction: column; }
+.brand strong { font-family: Georgia, serif; font-size: 1.15rem; }
+.brand small, .user-box small, .muted { color: #718078; }
+.page-container { max-width: 1180px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+.eyebrow { color: #608876; font-weight: 700; letter-spacing: .14em; font-size: .76rem; }
+.hero-card { min-height: 270px; padding: 3rem; border-radius: 24px; background: linear-gradient(120deg,#dcebe4,#f7eee8); display:flex; align-items:center; overflow:hidden; position:relative; }
+.hero-card:after { content:'✦'; position:absolute; right:8%; font-size:10rem; color:#ffffff80; }
+.hero-card h1, .content-card h1, .auth-card h2 { margin:.3rem 0 .75rem; font-family: Georgia, serif; font-size:2.35rem; }
+.hero-card p { max-width:580px; color:#52625b; font-size:1.05rem; }
+.feature-grid, .choice-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1rem; margin-top:1.25rem; }
+.feature-card, .choice-card, .content-card { background:#fff; border:1px solid #e4eae7; border-radius:18px; }
+.feature-card { padding:1.5rem; cursor:pointer; transition:.2s; }
+.feature-card:hover, .choice-card:hover { transform:translateY(-3px); box-shadow:0 10px 28px #1e3d3020; border-color:#9fc5b3; }
+.feature-card>i, .choice-card>i { color:#4d9073; font-size:1.6rem; }
+.feature-card p, .choice-card span, .choice-card small { color:#718078; }
+.feature-card span { color:#438069; font-weight:600; }
+.content-card { padding:2rem; }
+.page-title { display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom:1.5rem; }
+.page-title h1 { margin-top:.2rem; }
+.page-title p { color:#718078; }
+.auth-page { min-height:100vh; display:grid; grid-template-columns:1.15fr .85fr; background:linear-gradient(135deg,#d8e8e0,#f8f3ee); }
+.auth-intro { padding:8vw; display:flex; flex-direction:column; justify-content:center; }
+.auth-intro img { width:110px; margin-bottom:1rem; }
+.auth-intro h1 { font:3.5rem/1.08 Georgia,serif; margin:.5rem 0 1rem; }
+.auth-intro>p:last-child { color:#52625b; font-size:1.1rem; }
+.auth-card { margin:auto; width:min(430px,90%); padding:2.2rem; border-radius:24px; background:#ffffffed; box-shadow:0 24px 60px #29443828; }
+.auth-tabs { display:flex; gap:.5rem; background:#eef3f0; padding:.3rem; border-radius:12px; }
+.auth-tabs button { flex:1; border:0; background:transparent; padding:.7rem; border-radius:9px; cursor:pointer; }
+.auth-tabs button.active { background:#fff; color:#39765d; box-shadow:0 2px 8px #20382d15; font-weight:700; }
+.auth-form, .profile-card form { display:flex; flex-direction:column; gap:1rem; margin-top:1.5rem; }
+.auth-form label, .profile-card label { display:flex; flex-direction:column; gap:.4rem; font-weight:600; }
+.auth-form .p-inputtext, .auth-form .p-password, .profile-card .p-inputtext { width:100%; }
+.demo-hint { margin-top:1.4rem; padding:1rem; border-radius:12px; background:#f4f7f5; display:flex; flex-direction:column; gap:.25rem; font-size:.82rem; color:#607068; }
+.booking-steps { display:flex; gap:.5rem; margin:1rem 0 2rem; }
+.booking-steps span { width:34px; height:34px; border-radius:50%; display:grid; place-items:center; background:#e6ece9; color:#829087; }
+.booking-steps span.active { background:#4d9073; color:white; }
+.choice-card { padding:1.35rem; text-align:left; cursor:pointer; display:flex; flex-direction:column; gap:.5rem; }
+.native-input { border:1px solid #cbd5d0; border-radius:10px; padding:.75rem; min-width:240px; }
+.slots { display:flex; flex-wrap:wrap; gap:.65rem; margin:1rem 0; }
+.confirm-booking { margin-top:.5rem; }
+.booking-summary dl { max-width:620px; }
+.booking-summary dl div { display:flex; justify-content:space-between; padding:1rem 0; border-bottom:1px solid #edf0ee; }
+.booking-summary dt { color:#718078; }.booking-summary dd{font-weight:700}.actions,.table-actions{display:flex;gap:.5rem;flex-wrap:wrap}
+.appointment-list { display:flex; flex-direction:column; gap:.8rem; }
+.appointment-list article { border:1px solid #e7ece9; border-radius:14px; padding:1rem; display:grid; grid-template-columns:64px 1fr auto; align-items:center; gap:1rem; }
+.date-box { width:58px;height:58px;border-radius:12px;background:#e7f2ed;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#3e795f}.date-box b{font-size:1.35rem}.date-box span{text-transform:uppercase;font-size:.72rem}
+.empty-state { padding:3rem;text-align:center;color:#718078}.empty-state>i{font-size:2.5rem;color:#84aa99}
+.profile-card { max-width:600px;margin:auto; }
+.master-form { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:.75rem; padding:1rem; background:#f5f8f6; border-radius:14px; margin-bottom:1.2rem; align-items:end; }
+.admin-booking-form { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1rem; margin:1.5rem 0; }
+.admin-booking-form label { display:flex; flex-direction:column; gap:.45rem; font-weight:600; }
+.master-form label { display:flex; flex-direction:column; gap:.25rem; font-size:.8rem; }
+.service-chip { display:inline-block; padding:.25rem .55rem; margin:.15rem; border-radius:999px; background:#e6f1ec; color:#39745b; font-size:.78rem; }
+@media(max-width:800px){.auth-page{grid-template-columns:1fr}.auth-intro{display:none}.main-menu{padding:.5rem!important}.brand div{display:none}.page-container{padding:1rem}.hero-card{padding:2rem}.hero-card h1,.content-card h1{font-size:1.8rem}.user-box span{display:none}}

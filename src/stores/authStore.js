@@ -5,9 +5,9 @@ const backendUrl = import.meta.env.VITE_BACKEND_URL
 
 export const useAuthStore = defineStore('auth', {
     state: () => ({
-        user: null,
+        user: JSON.parse(localStorage.getItem('salon_user') || 'null'),
         token: localStorage.getItem('token') || null,
-        isAuthenticated: false,
+        isAuthenticated: !!localStorage.getItem('token'),
         errorMessage: '',
         errorCode: 0
     }),
@@ -27,6 +27,7 @@ export const useAuthStore = defineStore('auth', {
                 this.isAuthenticated = true
 
                 localStorage.setItem('token', response.data.token)
+                localStorage.setItem('salon_user', JSON.stringify(response.data.user))
 
             } catch (error) {
                 if (error.response) {
@@ -36,6 +37,36 @@ export const useAuthStore = defineStore('auth', {
                 }
 
                 console.log(error)
+            }
+        },
+
+        async register(data) {
+            this.errorMessage = ''
+            try {
+                const response = await axios.post(backendUrl + '/register', data)
+                this.user = response.data.user
+                this.token = response.data.token
+                this.isAuthenticated = true
+                localStorage.setItem('token', response.data.token)
+                localStorage.setItem('salon_user', JSON.stringify(response.data.user))
+                return true
+            } catch (error) {
+                this.errorMessage = error.response?.data?.message || 'Не удалось зарегистрироваться'
+                return false
+            }
+        },
+
+        async updateProfile(data) {
+            try {
+                const response = await axios.put(backendUrl + '/profile', data, {
+                    headers: { Authorization: 'Bearer ' + this.token }
+                })
+                this.user = response.data
+                localStorage.setItem('salon_user', JSON.stringify(response.data))
+                return true
+            } catch (error) {
+                this.errorMessage = error.response?.data?.message || 'Не удалось сохранить профиль'
+                return false
             }
         },
 
@@ -53,6 +84,8 @@ export const useAuthStore = defineStore('auth', {
                 )
 
                 this.user = response.data
+                localStorage.setItem('salon_user', JSON.stringify(response.data))
+                this.isAuthenticated = true
 
             } catch (error) {
                 if (error.response) {
@@ -62,6 +95,11 @@ export const useAuthStore = defineStore('auth', {
                 }
 
                 console.log(error)
+                this.token = null
+                this.user = null
+                this.isAuthenticated = false
+                localStorage.removeItem('token')
+                localStorage.removeItem('salon_user')
             }
         },
 
@@ -83,6 +121,7 @@ export const useAuthStore = defineStore('auth', {
                 this.isAuthenticated = false
 
                 localStorage.removeItem('token')
+                localStorage.removeItem('salon_user')
 
             } catch (error) {
                 if (error.response) {

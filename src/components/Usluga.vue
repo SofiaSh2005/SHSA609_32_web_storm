@@ -2,6 +2,7 @@
   <div class="p-4">
 
     <Button
+        v-if="isAuthenticated"
         label="Добавить услугу"
         icon="pi pi-plus"
         class="mb-3"
@@ -22,6 +23,7 @@
       <Column field="id" header="ID" />
       <Column field="nazvanie" header="Название услуги" />
       <Column field="stoimost" header="Стоимость" />
+      <Column header="Длительность"><template #body="{ data }">{{ data.prodolzhitelnost }} мин.</template></Column>
 
 
       <Column header="Фото">
@@ -45,6 +47,7 @@ import Column from "primevue/column";
 import Button from "primevue/button";
 
 import { useDataStore } from '@/stores/dataStore';
+import { useAuthStore } from '@/stores/authStore';
 
 export default {
   name: "Usluga",
@@ -58,12 +61,17 @@ export default {
   data() {
     return {
       dataStore: useDataStore(),
+      authStore: useAuthStore(),
       perpage: 5,
       offset: 0
     };
   },
 
   computed: {
+    isAuthenticated() {
+      return this.authStore.isAuthenticated;
+    },
+
     usluga() {
       return this.dataStore.usluga;
     },

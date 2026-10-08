@@ -1,141 +1,42 @@
 <template>
-  <Menubar :model="items">
-
-    <template #start>
-      <img src="@/assets/logo.svg" width="80" alt="logo" />
-    </template>
-
-
-    <template #item="{ item, props }">
-      <router-link
-          v-if="item.route"
-          :to="item.route"
-          class="flex items-center p-2"
-          v-bind="props.action"
-      >
-        <span :class="item.icon"></span>
-        <span class="ml-2">{{ item.label }}</span>
-      </router-link>
-    </template>
-
-
-    <template #end>
-      <div class="flex items-center gap-2">
-
-
-        <div v-if="isAuthenticated && user">
-          <span class="pi pi-user mr-2"></span>
-          {{ user.name }}
-          <Button @click="logout" class="ml-2">Выйти</Button>
-        </div>
-
-
-        <div v-else>
-          <form @submit.prevent="login" class="flex items-center gap-2">
-
-            <InputText
-                v-model="email"
-                type="email"
-                placeholder="Логин"
-                :class="{ 'p-invalid': authError }"
-            />
-
-            <InputText
-                v-model="password"
-                type="password"
-                placeholder="Пароль"
-                :class="{ 'p-invalid': authError }"
-            />
-
-            <Button type="submit">Войти</Button>
-
-
-          </form>
-
-          <small v-if="authError" class="error">
-            {{ authError }}
-          </small>
-        </div>
-
-      </div>
-    </template>
-
-  </Menubar>
-
-  <router-view />
+  <AuthPage v-if="!isAuthenticated" />
+  <div v-else class="app-shell">
+    <Menubar :model="items" class="main-menu">
+      <template #start><div class="brand"><img src="@/assets/logo.svg" width="54" alt="Beauty Care" /><div><strong>Beauty Care</strong><small>Управление салоном</small></div></div></template>
+      <template #item="{ item, props }"><router-link v-if="item.route" :to="item.route" v-bind="props.action"><span :class="item.icon"></span><span>{{ item.label }}</span></router-link></template>
+      <template #end><div class="user-box"><span><b>{{ user?.name }}</b><small>{{ isAdmin ? 'Администратор' : 'Клиент' }}</small></span><Button icon="pi pi-sign-out" severity="secondary" text aria-label="Выйти" @click="logout" /></div></template>
+    </Menubar>
+    <main class="page-container"><router-view /></main>
+  </div>
+  <Toast /><ConfirmPopup />
 </template>
 
 <script>
-import { useAuthStore } from '@/stores/authStore';
-import Button from 'primevue/button';
-import Menubar from 'primevue/menubar';
-import InputText from 'primevue/inputtext';
+import { useAuthStore } from '@/stores/authStore'
+import AuthPage from '@/components/AuthPage.vue'
+import Button from 'primevue/button'
+import Menubar from 'primevue/menubar'
 
 export default {
-  components: {
-    Button,
-    Menubar,
-    InputText
-  },
-
-  data() {
-    return {
-      email: '',
-      password: '',
-      authStore: useAuthStore(),
-      items: [
-        { label: 'Главная', icon: 'pi pi-home', route: '/' },
-        { label: 'Клиенты', icon: 'pi pi-users', route: '/klient' },
-        { label: 'Косметологи', icon: 'pi pi-user', route: '/kosmetolog' },
-        { label: 'Услуги', icon: 'pi pi-briefcase', route: '/usluga' },
-        { label: 'Сеансы', icon: 'pi pi-calendar', route: '/seans' }
-      ]
-    };
-  },
-
+  components: { AuthPage, Button, Menubar },
+  data: () => ({ authStore: useAuthStore() }),
   computed: {
-    isAuthenticated() {
-      return this.authStore.isAuthenticated;
-    },
-
-    user() {
-      return this.authStore.user;
-    },
-
-    authError() {
-      return this.authStore.errorMessage;
+    isAuthenticated() { return this.authStore.isAuthenticated },
+    user() { return this.authStore.user },
+    isAdmin() { return this.user?.role === 'admin' },
+    items() {
+      if (this.isAdmin) return [
+        { label: 'Обзор', icon: 'pi pi-home', route: '/dashboard' }, { label: 'Записи', icon: 'pi pi-calendar', route: '/seans' },
+        { label: 'Клиенты', icon: 'pi pi-users', route: '/klient' }, { label: 'Мастера', icon: 'pi pi-user', route: '/kosmetolog' },
+        { label: 'Услуги', icon: 'pi pi-sparkles', route: '/usluga' }
+      ]
+      return [
+        { label: 'Главная', icon: 'pi pi-home', route: '/dashboard' }, { label: 'Записаться', icon: 'pi pi-calendar-plus', route: '/booking' },
+        { label: 'Мои записи', icon: 'pi pi-calendar', route: '/my-bookings' }, { label: 'Профиль', icon: 'pi pi-user', route: '/profile' }
+      ]
     }
   },
-
-  methods: {
-    login() {
-      this.authStore.login({
-        email: this.email,
-        password: this.password
-      });
-    },
-
-    logout() {
-      this.authStore.logout();
-    }
-  },
-
-  mounted() {
-    const token = localStorage.getItem('token');
-
-    if (token) {
-      this.authStore.isAuthenticated = true;
-      this.authStore.getUser();
-    }
-  }
-};
-</script>
-
-<style scoped>
-.error {
-  color: red;
+  methods: { async logout() { await this.authStore.logout(); this.$router.push('/') } },
+  mounted() { if (this.authStore.token) this.authStore.getUser() }
 }
-</style>
-
-<Toast />
-<ConfirmPopup />
+</script>
